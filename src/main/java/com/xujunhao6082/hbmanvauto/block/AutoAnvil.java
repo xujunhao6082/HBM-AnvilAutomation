@@ -4,8 +4,11 @@ import com.xujunhao6082.hbmanvauto.item.ItemLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class AutoAnvil extends Block {
     public final Block oldAnvil;
@@ -21,12 +24,10 @@ public class AutoAnvil extends Block {
         return this.oldAnvil.getUnlocalizedName()+"_auto";
     }
     @Override
-    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int metaData){
-        if(!world.isRemote){
-            world.spawnEntityInWorld(new EntityItem(world,x,y,z,
-                    new ItemStack(this.oldAnvil,1)));
-            world.spawnEntityInWorld(new EntityItem(world,x,y,z,
-                    new ItemStack(ItemLoader.Items.autotool,1)));
-        }
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune){
+        ArrayList<ItemStack> ret = new ArrayList<>();
+        ret.add(new ItemStack(this.oldAnvil,1));
+        ret.add(new ItemStack(ItemLoader.Items.autotool,1));
+        return ret;
     }
 }
