@@ -25,6 +25,6 @@ public class AutoTool extends Item implements ITooltipProvider {
     @Override
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
-        list.add(EnumChatFormatting.GOLD + "Shift+Right to make Anvils to be Automated.");
+        list.add(EnumChatFormatting.GOLD + "Shift+Right to automate the Anvil.");
     }
 }
