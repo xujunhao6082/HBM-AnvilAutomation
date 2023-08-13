@@ -1,10 +1,9 @@
 package com.xujunhao6082.hbmanvauto.block;
 
+import com.xujunhao6082.hbmanvauto.Main;
 import com.xujunhao6082.hbmanvauto.item.ItemLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -19,6 +18,7 @@ public class AutoAnvil extends Block {
         this.setHardness(5.0F);
         this.setResistance(100.0F);
         this.setStepSound(Block.soundTypeAnvil);
+        this.setBlockTextureName(Main.MODID+":autoanvil");
     }
     public String getRegisterName(){
         return this.oldAnvil.getUnlocalizedName()+"_auto";
