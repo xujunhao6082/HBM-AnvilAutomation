@@ -39,7 +39,7 @@ minecraft {
 }
 
 dependencies {
-    compile fileTree(dir: 'eclipse/mods', include: ['*.jar'])
+    compileOnly fileTree(dir: 'eclipse/mods', include: ['*.jar'])
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
