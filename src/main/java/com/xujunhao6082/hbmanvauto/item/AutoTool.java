@@ -10,7 +10,7 @@ public class AutoTool extends Item {
         this.setUnlocalizedName("autotool");
         this.setTextureName(Main.MODID+":"+getRegisterName());
         this.setCreativeTab(MainRegistry.consumableTab);
-
+        this.setMaxStackSize(1);
     }
     public static String getRegisterName(){
         return "autotool";

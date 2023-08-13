@@ -1,1 +1,12 @@
 item.autotool.name=自动化工具
+tile.anvil_bismuth_auto.name=自动铋砧
+tile.anvil_dnt_auto.name=自动双聚中子态素砧
+tile.anvil_ferrouranium_auto.name=自动铀铁合金砧
+tile.anvil_iron_auto.name=自动铁砧
+tile.anvil_lead_auto.name=自动铅砧
+tile.anvil_meteorite_auto.name=自动陨石砧
+tile.anvil_murky_auto.name=自动暗黑砧
+tile.anvil_osmiridium_auto.name=自动铱锇合金砧
+tile.anvil_schrabidate_auto.name=自动Sa-铁合金砧
+tile.anvil_starmetal_auto.name=自动星辉金属砧
+tile.anvil_steel_auto.name=自动钢砧
