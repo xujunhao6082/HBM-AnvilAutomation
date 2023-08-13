@@ -59,14 +59,14 @@ public class AutoAnvil extends Block implements IGUIProvider {
 
     @Override
     public Container provideContainer(int i, EntityPlayer entityPlayer, World world, int x, int y, int z) {
-        return (i == 0) ? new ContainerAutoAnvilChangeMode(entityPlayer.inventory,
+        return (i == 0) ? new ContainerAutoAnvilSettingMode(entityPlayer.inventory,
                 ((NTMAnvil)((AutoAnvil)world.getBlock(x, y, z)).oldAnvil).tier)
                 : null;
     }
 
     @Override
     public GuiScreen provideGUI(int i, EntityPlayer entityPlayer, World world, int x, int y, int z) {
-        return (i == 0) ? new GUIAutoAnvilChangeMode(entityPlayer.inventory,
+        return (i == 0) ? new GUIAutoAnvilSettingMode(entityPlayer.inventory,
                 ((NTMAnvil)((AutoAnvil)world.getBlock(x, y, z)).oldAnvil).tier)
                 : null;
     }

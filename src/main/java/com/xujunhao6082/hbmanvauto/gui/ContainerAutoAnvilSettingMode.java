@@ -5,12 +5,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 
-public class ContainerAutoAnvilChangeMode extends Container {
+public class ContainerAutoAnvilSettingMode extends Container {
 
 
     public int tier;
 
-    public ContainerAutoAnvilChangeMode(InventoryPlayer inventory, int tier) {
+    public ContainerAutoAnvilSettingMode(InventoryPlayer inventory, int tier) {
         this.tier = tier;
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 9; j++) {

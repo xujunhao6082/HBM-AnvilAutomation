@@ -2,8 +2,6 @@ package com.xujunhao6082.hbmanvauto.gui;
 
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
-import com.hbm.packet.AnvilCraftPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.xujunhao6082.hbmanvauto.Main;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
@@ -26,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class GUIAutoAnvilChangeMode extends GuiContainer {
+public class GUIAutoAnvilSettingMode extends GuiContainer {
     public static ResourceLocation texture = new ResourceLocation(Main.MODID + ":textures/gui/autoanvil_cm.png");
     private final int tier;
     private final List<AnvilRecipes.AnvilConstructionRecipe> originList = new ArrayList<>();
@@ -35,8 +33,8 @@ public class GUIAutoAnvilChangeMode extends GuiContainer {
     int size;
     int selection;
     private GuiTextField search;
-    public GUIAutoAnvilChangeMode(InventoryPlayer player, int tier) {
-        super(new ContainerAutoAnvilChangeMode(player, tier));
+    public GUIAutoAnvilSettingMode(InventoryPlayer player, int tier) {
+        super(new ContainerAutoAnvilSettingMode(player, tier));
 
         this.tier = tier;
         this.xSize = 176;
@@ -157,7 +155,7 @@ public class GUIAutoAnvilChangeMode extends GuiContainer {
             if(this.selection == -1)
                 return;
             mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-            PacketDispatcher.wrapper.sendToServer(new AnvilCraftPacket(this.recipes.get(this.selection), Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 1 : 0));
+            //TODO SetMode
             return;
         }
 		/*if(guiLeft + 97 <= x && guiLeft + 97 + 18 > x && guiTop + 77 < y && guiTop + 77 + 18 >= y) {
