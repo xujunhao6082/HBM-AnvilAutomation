@@ -22,9 +22,11 @@ public class AutoAnvil extends Block {
     }
     @Override
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int metaData){
-        world.spawnEntityInWorld(new EntityItem(world,x,y,z,
-                new ItemStack(this.oldAnvil,1)));
-        world.spawnEntityInWorld(new EntityItem(world,x,y,z,
-                new ItemStack(ItemLoader.Items.autotool,1)));
+        if(!world.isRemote){
+            world.spawnEntityInWorld(new EntityItem(world,x,y,z,
+                    new ItemStack(this.oldAnvil,1)));
+            world.spawnEntityInWorld(new EntityItem(world,x,y,z,
+                    new ItemStack(ItemLoader.Items.autotool,1)));
+        }
     }
 }
