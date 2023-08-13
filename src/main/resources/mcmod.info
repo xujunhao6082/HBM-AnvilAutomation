@@ -1,0 +1,16 @@
+[
+{
+  "modid": "hbmanvauto",
+  "name": "AutoAnvil For HBM-NTM",
+  "description": "Offer a automated Solution of the Anvil.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["xujunhao6082"],
+  "credits": "Automation!",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["hbm"]
+}
+]
