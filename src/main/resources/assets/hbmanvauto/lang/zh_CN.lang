@@ -10,3 +10,4 @@ tile.anvil_osmiridium_auto.name=自动铱锇合金砧
 tile.anvil_schrabidate_auto.name=自动Sa-铁合金砧
 tile.anvil_starmetal_auto.name=自动星辉金属砧
 tile.anvil_steel_auto.name=自动钢砧
+container.autoanvil=自动砧(Tier %s)

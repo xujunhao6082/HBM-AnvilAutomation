@@ -9,4 +9,5 @@ tile.anvil_murky_auto.name=Automated Murky Anvil
 tile.anvil_osmiridium_auto.name=Automated Osmiridium Anvil
 tile.anvil_schrabidate_auto.name=Automated Ferric Schrabidate Anvil
 tile.anvil_starmetal_auto.name=Automated Starmetal Anvil
-tile.anvil_steel_auto.name=Automated Steel Anvil
+tile.anvil_steel_auto.name=Steel Anvil
+container.autoanvil=Auto Anvil (Tier %s)
