@@ -1,9 +1,16 @@
 package com.xujunhao6082.hbmanvauto.item;
 
+import com.hbm.blocks.ITooltipProvider;
 import com.hbm.main.MainRegistry;
 import com.xujunhao6082.hbmanvauto.Main;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-public class AutoTool extends Item {
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+
+import java.util.List;
+
+public class AutoTool extends Item implements ITooltipProvider {
     public AutoTool()
     {
         super();
@@ -14,5 +21,10 @@ public class AutoTool extends Item {
     }
     public static String getRegisterName(){
         return "autotool";
+    }
+    @Override
+    @SuppressWarnings("unchecked")
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
+        list.add(EnumChatFormatting.GOLD + "Shift+Right to make Anvils to be Automated.");
     }
 }
