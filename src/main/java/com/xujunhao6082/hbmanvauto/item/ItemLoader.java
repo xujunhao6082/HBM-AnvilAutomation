@@ -10,7 +10,7 @@ public class ItemLoader {
         public static Item autotool = new AutoTool();
     }
 
-    public ItemLoader(FMLPreInitializationEvent event) {
+    public ItemLoader(FMLPreInitializationEvent ignoredEvent) {
         GameRegistry.registerItem(Items.autotool, AutoTool.getRegisterName(), Main.MODID);
     }
 }

@@ -22,7 +22,7 @@ public class BlockLoader {
                 new AutoAnvil(Material.iron,ModBlocks.anvil_murky)
         };
     }
-    public BlockLoader(FMLPreInitializationEvent event) {
+    public BlockLoader(FMLPreInitializationEvent ignoredEvent) {
         for (Block block:Blocks.autoanvil) {
             GameRegistry.registerBlock(block, ((AutoAnvil)block).getRegisterName());
         }
