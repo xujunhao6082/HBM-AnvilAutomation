@@ -23,7 +23,8 @@ public class EventLoader {
                 return;
             }
             if (item.getItem().equals(Items.autotool) &&
-                    event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) {
+                    event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)&&
+                    event.entityPlayer.isSneaking()) {
                 Block b = event.world.getBlock(event.x, event.y, event.z),nb;
                 if (b instanceof NTMAnvil) {
                     if(!((EntityPlayerMP)event.entityPlayer).
