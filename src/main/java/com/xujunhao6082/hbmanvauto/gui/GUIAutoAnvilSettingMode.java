@@ -155,7 +155,7 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
             if(this.selection == -1)
                 return;
             mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-            //TODO SetMode
+            //TODO SetModeFunction
             return;
         }
 		/*if(guiLeft + 97 <= x && guiLeft + 97 + 18 > x && guiTop + 77 < y && guiTop + 77 + 18 >= y) {
