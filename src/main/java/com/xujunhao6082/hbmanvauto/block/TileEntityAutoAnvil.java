@@ -23,7 +23,6 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
     public static int from = 18;
     public static int size = 9;
     public static int PowerReduce = 100;
-    //TODO TileEntity
     public long power;
     public static final long maxPower = 100000L;
     public AnvilConstructionRecipe recipe;
