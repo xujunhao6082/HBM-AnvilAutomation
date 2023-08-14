@@ -61,13 +61,13 @@ public class AutoAnvil extends Block implements IGUIProvider {
     public Container provideContainer(int i, EntityPlayer entityPlayer, World world, int x, int y, int z) {
         return (i == 0) ? new ContainerAutoAnvilSettingMode(entityPlayer.inventory,
                 ((NTMAnvil)((AutoAnvil)world.getBlock(x, y, z)).oldAnvil).tier)
-                : null;
+                : null;//TODO STORAGE MODE
     }
 
     @Override
     public GuiScreen provideGUI(int i, EntityPlayer entityPlayer, World world, int x, int y, int z) {
         return (i == 0) ? new GUIAutoAnvilSettingMode(entityPlayer.inventory,
                 ((NTMAnvil)((AutoAnvil)world.getBlock(x, y, z)).oldAnvil).tier)
-                : null;
+                : null;//TODO STORAGE MODE
     }
 }
