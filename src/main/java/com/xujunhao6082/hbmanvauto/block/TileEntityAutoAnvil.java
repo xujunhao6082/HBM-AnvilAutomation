@@ -71,6 +71,7 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
         super.writeToNBT(nbt);
         nbt.setLong("power", power);
         nbt.setInteger("recipe", AnvilRecipes.getConstruction().indexOf(recipe));
+        markDirty();
     }
 
     public void setPower(long i) {
