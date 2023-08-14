@@ -3,6 +3,7 @@ package com.xujunhao6082.hbmanvauto.item;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.main.MainRegistry;
 import com.xujunhao6082.hbmanvauto.Main;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,6 +26,6 @@ public class AutoTool extends Item implements ITooltipProvider {
     @Override
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
-        list.add(EnumChatFormatting.GOLD + "Shift+Right to automate the Anvil.");
+        list.add(EnumChatFormatting.GOLD + I18n.format("tooltip.autotool.text"));
     }
 }

@@ -13,14 +13,16 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 
 public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnergyUser {
-    public static int from;
-    public static int size;
+    public static int from = 18;
+    public static int size = 9;
+    public static int PowerReduce = 100;
     //TODO TileEntity
     public long power;
     public static final long maxPower = 100000L;
@@ -85,9 +87,8 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
     public void updateEntity() {
         if (!worldObj.isRemote) {
             if (task != null) {
-                task.update(this.slots);
-                if (recipeChanged) {
-                    recipeChanged = false;
+                task.update();
+                if(recipeChanged){
                     task.cancel();
                 }
                 if (task.input == null) {
@@ -96,8 +97,14 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
             } else if (recipe != null) {
                 ItemStack[] inv = new ItemStack[27];
                 boolean make = true;
+                ItemStack placeholder=new ItemStack(Blocks.air,0);
                 for (int i = 0; i < 27; i++) {
-                    inv[i] = this.getStackInSlot(i).copy();
+                    inv[i] = this.getStackInSlot(i);
+                    if(inv[i]!=null){
+                        inv[i]=inv[i].copy();
+                    }else {
+                        inv[i]=placeholder;
+                    }
                 }
                 for (int i = 0; i < recipe.input.size(); i++) {
                     make &= InventoryUtil.doesInventoryHaveAStack(
@@ -127,7 +134,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                         }
                     }
                     for (int i = 0; i < 27; i++) {
-                        this.setInventorySlotContents(i, inv[i]);
+                        if(inv[i]!=placeholder){
+                            this.setInventorySlotContents(i, inv[i]);
+                        }
                     }
                     out = new ItemStack[recipe.output.size()];
                     for (int i = 0; i < recipe.output.size(); i++) {
@@ -135,6 +144,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                     }
                     task = new Task(in, out);
                 }
+            }
+            if (recipeChanged) {
+                recipeChanged = false;
             }
         }
     }
@@ -149,7 +161,8 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
             this.output = output;
         }
 
-        public void update(ItemStack[] slots) {
+        public void update() {
+            power -= PowerReduce;
             process++;
             if (process > 10) {
                 input = null;
@@ -178,11 +191,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                             break;
                     }
                     if (itemStack != null) {
-                        Entity out = new EntityItem(TileEntityAutoAnvil.this.worldObj,
-                                TileEntityAutoAnvil.this.xCoord,
-                                TileEntityAutoAnvil.this.yCoord + 1,
-                                TileEntityAutoAnvil.this.zCoord, itemStack);
-                        TileEntityAutoAnvil.this.worldObj.spawnEntityInWorld(out);
+                        Entity out = new EntityItem(worldObj,
+                                xCoord, yCoord + 1, zCoord, itemStack);
+                        worldObj.spawnEntityInWorld(out);
                     }
                 }
             }
@@ -190,11 +201,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
 
         public void cancel() {
             for (ItemStack item : input) {
-                Entity out = new EntityItem(TileEntityAutoAnvil.this.worldObj,
-                        TileEntityAutoAnvil.this.xCoord,
-                        TileEntityAutoAnvil.this.yCoord + 1,
-                        TileEntityAutoAnvil.this.zCoord, item);
-                TileEntityAutoAnvil.this.worldObj.spawnEntityInWorld(out);
+                Entity out = new EntityItem(worldObj,
+                        xCoord, yCoord + 1, zCoord, item);
+                worldObj.spawnEntityInWorld(out);
             }
             input = null;
         }

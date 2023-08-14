@@ -13,3 +13,5 @@ tile.anvil_steel_auto.name=自动钢砧
 container.autoanvil=自动砧(Tier %s)
 container.autoanvil_storage=自动砧
 chat.setting_failed_tier.text=砧等级过低或过高[%s,%s]
+tooltip.autotool.text=Shift+右击砧来将其变成对应的自动砧
+tooltip.auto_anvil.text=右击打开设置界面，Shift+右击打开储存界面

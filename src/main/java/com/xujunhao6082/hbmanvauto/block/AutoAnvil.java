@@ -1,5 +1,6 @@
 package com.xujunhao6082.hbmanvauto.block;
 
+import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.machine.NTMAnvil;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.IGUIProvider;
@@ -11,15 +12,18 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class AutoAnvil extends BlockContainer implements IGUIProvider {
+public class AutoAnvil extends BlockContainer implements IGUIProvider, ITooltipProvider {
     public final Block oldAnvil;
 
     public AutoAnvil(Material material, Block oldAnvil) {
@@ -79,5 +83,11 @@ public class AutoAnvil extends BlockContainer implements IGUIProvider {
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityAutoAnvil(27);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean b) {
+        list.add(EnumChatFormatting.GOLD+I18n.format("tooltip.auto_anvil.text"));
     }
 }

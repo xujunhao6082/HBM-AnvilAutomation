@@ -13,3 +13,5 @@ tile.anvil_steel_auto.name=Steel Anvil
 container.autoanvil=Auto Anvil (Tier %s)
 container.autoanvil_storage=Auto Anvil
 chat.setting_failed_tier.text=The Tier of this anvil is too low/high to make it.[%s,%s]
+tooltip.autotool.text=Shift+Right to automate the Anvil.
+tooltip.auto_anvil.text=Right to set the Recipe,Shift+Right to open storage GUI.
