@@ -1,5 +1,6 @@
 package com.xujunhao6082.hbmanvauto.block;
 
+import com.xujunhao6082.hbmanvauto.Main;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -25,6 +26,9 @@ public class BlockLoader {
     public BlockLoader(FMLPreInitializationEvent ignoredEvent) {
         for (Block block:Blocks.autoanvil) {
             GameRegistry.registerBlock(block, ((AutoAnvil)block).getRegisterName());
+            GameRegistry.registerTileEntity(TileEntityAutoAnvil.class,
+                    Main.MODID + ":" + ((AutoAnvil)block).getRegisterName());
         }
+
     }
 }

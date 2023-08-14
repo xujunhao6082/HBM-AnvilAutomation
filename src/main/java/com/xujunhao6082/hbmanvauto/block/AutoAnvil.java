@@ -8,16 +8,18 @@ import com.xujunhao6082.hbmanvauto.gui.*;
 import com.xujunhao6082.hbmanvauto.item.ItemLoader;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class AutoAnvil extends Block implements IGUIProvider {
+public class AutoAnvil extends BlockContainer implements IGUIProvider {
     public final Block oldAnvil;
 
     public AutoAnvil(Material material, Block oldAnvil) {
@@ -60,14 +62,22 @@ public class AutoAnvil extends Block implements IGUIProvider {
     @Override
     public Container provideContainer(int i, EntityPlayer entityPlayer, World world, int x, int y, int z) {
         return (i == 0) ? new ContainerAutoAnvilSettingMode(entityPlayer.inventory,
-                ((NTMAnvil)((AutoAnvil)world.getBlock(x, y, z)).oldAnvil).tier)
-                : null;//TODO STORAGE MODE
+                ((NTMAnvil) ((AutoAnvil) world.getBlock(x, y, z)).oldAnvil).tier)
+                : new ContainerAutoAnvilStorageMode(entityPlayer.inventory,
+                ((TileEntityAutoAnvil) world.getTileEntity(x, y, z)));
     }
 
     @Override
     public GuiScreen provideGUI(int i, EntityPlayer entityPlayer, World world, int x, int y, int z) {
         return (i == 0) ? new GUIAutoAnvilSettingMode(entityPlayer.inventory,
-                ((NTMAnvil)((AutoAnvil)world.getBlock(x, y, z)).oldAnvil).tier)
-                : null;//TODO STORAGE MODE
+                ((NTMAnvil) ((AutoAnvil) world.getBlock(x, y, z)).oldAnvil).tier,
+                x, y, z)
+                : new GUIAutoAnvilStorageMode(entityPlayer.inventory,
+                ((TileEntityAutoAnvil) world.getTileEntity(x, y, z)));
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new TileEntityAutoAnvil(27);
     }
 }

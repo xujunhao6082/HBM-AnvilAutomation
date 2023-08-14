@@ -3,6 +3,10 @@ package com.xujunhao6082.hbmanvauto.gui;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
 import com.xujunhao6082.hbmanvauto.Main;
+import com.xujunhao6082.hbmanvauto.NetworkLoader;
+import com.xujunhao6082.hbmanvauto.block.TileEntityAutoAnvil;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
@@ -24,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+@SideOnly(Side.CLIENT)
 public class GUIAutoAnvilSettingMode extends GuiContainer {
     public static ResourceLocation texture = new ResourceLocation(Main.MODID + ":textures/gui/autoanvil_cm.png");
     private final int tier;
@@ -33,15 +38,19 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
     int size;
     int selection;
     private GuiTextField search;
-    public GUIAutoAnvilSettingMode(InventoryPlayer player, int tier) {
-        super(new ContainerAutoAnvilSettingMode(player, tier));
+    public final int tx, ty, tz;
 
+    public GUIAutoAnvilSettingMode(InventoryPlayer player, int tier, int x, int y, int z) {
+        super(new ContainerAutoAnvilSettingMode(player, tier));
+        tx = x;
+        ty = y;
+        tz = z;
         this.tier = tier;
         this.xSize = 176;
         this.ySize = 222;
 
-        for(AnvilRecipes.AnvilConstructionRecipe recipe : AnvilRecipes.getConstruction()) {
-            if(recipe.isTierValid(this.tier))
+        for (AnvilRecipes.AnvilConstructionRecipe recipe : AnvilRecipes.getConstruction()) {
+            if (recipe.isTierValid(this.tier))
                 this.originList.add(recipe);
         }
 
@@ -50,6 +59,7 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
         guiLeft = (this.width - this.xSize) / 2;
         guiTop = (this.height - this.ySize) / 2;
     }
+
     @Override
     public void initGui() {
 
@@ -62,6 +72,7 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
         this.search.setEnableBackgroundDrawing(false);
         this.search.setMaxStringLength(25);
     }
+
     private void regenerateRecipes() {
 
         this.recipes.clear();
@@ -69,21 +80,22 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
 
         resetPaging();
     }
+
     private void search(String search) {
 
         search = search.toLowerCase(Locale.US);
 
         this.recipes.clear();
 
-        if(search.isEmpty()) {
+        if (search.isEmpty()) {
             this.recipes.addAll(this.originList);
 
         } else {
-            for(AnvilRecipes.AnvilConstructionRecipe recipe : this.originList) {
+            for (AnvilRecipes.AnvilConstructionRecipe recipe : this.originList) {
                 List<String> list = recipeToSearchList(recipe);
 
-                for(String s : list) {
-                    if(s.contains(search)) {
+                for (String s : list) {
+                    if (s.contains(search)) {
                         this.recipes.add(recipe);
                         break;
                     }
@@ -93,69 +105,77 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
 
         resetPaging();
     }
+
     private void resetPaging() {
 
         this.index = 0;
         this.selection = -1;
-        this.size = Math.max(0, (int)Math.ceil((this.recipes.size() - 10) / 2D));
+        this.size = Math.max(0, (int) Math.ceil((this.recipes.size() - 10) / 2D));
     }
+
     @Override
     public void drawScreen(int x, int y, float interp) {
         super.drawScreen(x, y, interp);
 
-        for(Object obj : this.inventorySlots.inventorySlots) {
+        for (Object obj : this.inventorySlots.inventorySlots) {
             Slot slot = (Slot) obj;
-            if(this.func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition,
+            if (this.func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition,
                     16, 16, x, y) && slot.getHasStack()) {
                 return;
             }
         }
 
-        if(guiLeft <= x && guiLeft + xSize > x && guiTop < y && guiTop + ySize >= y
+        if (guiLeft <= x && guiLeft + xSize > x && guiTop < y && guiTop + ySize >= y
                 && getSlotAtPosition(x, y) == null) {
-            if(!Mouse.isButtonDown(0) && !Mouse.isButtonDown(1) && Mouse.next()) {
+            if (!Mouse.isButtonDown(0) && !Mouse.isButtonDown(1) && Mouse.next()) {
                 int scroll = Mouse.getEventDWheel();
 
-                if(scroll > 0 && this.index > 0) this.index--;
-                if(scroll < 0 && this.index < this.size) this.index++;
+                if (scroll > 0 && this.index > 0) this.index--;
+                if (scroll < 0 && this.index < this.size) this.index++;
             }
         }
     }
+
     private Slot getSlotAtPosition(int x, int y) {
-        for(int k = 0; k < this.inventorySlots.inventorySlots.size(); ++k) {
+        for (int k = 0; k < this.inventorySlots.inventorySlots.size(); ++k) {
             Slot slot = (Slot) this.inventorySlots.inventorySlots.get(k);
 
-            if(this.isMouseOverSlot(slot, x, y)) {
+            if (this.isMouseOverSlot(slot, x, y)) {
                 return slot;
             }
         }
 
         return null;
     }
+
     private boolean isMouseOverSlot(Slot slot, int x, int y) {
         return this.func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y);
     }
+
     @Override
     protected void mouseClicked(int x, int y, int k) {
         super.mouseClicked(x, y, k);
         this.search.mouseClicked(x, y, k);
-        if(guiLeft + 7 <= x && guiLeft + 7 + 9 > x && guiTop + 41 < y && guiTop + 41 + 36 >= y) {
-            mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-            if(this.index > 0)
+        if (guiLeft + 7 <= x && guiLeft + 7 + 9 > x && guiTop + 41 < y && guiTop + 41 + 36 >= y) {
+            mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
+                    new ResourceLocation("gui.button.press"), 1.0F));
+            if (this.index > 0)
                 this.index--;
             return;
         }
-        if(guiLeft + 106 <= x && guiLeft + 106 + 9 > x && guiTop + 41 < y && guiTop + 41 + 36 >= y) {
+        if (guiLeft + 106 <= x && guiLeft + 106 + 9 > x && guiTop + 41 < y && guiTop + 41 + 36 >= y) {
             mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-            if(this.index < this.size)
+            if (this.index < this.size)
                 this.index++;
             return;
         }
-        if(guiLeft + 52 <= x && guiLeft + 52 + 18 > x && guiTop + 23 < y && guiTop + 23 + 18 >= y) {
-            if(this.selection == -1)
+        if (guiLeft + 52 <= x && guiLeft + 52 + 18 > x && guiTop + 23 < y && guiTop + 23 + 18 >= y) {
+            if (this.selection == -1)
                 return;
-            mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-            //TODO SetModeFunction
+            mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
+                    new ResourceLocation("gui.button.press"), 1.0F));
+            NetworkLoader.instance.sendToServer(
+                    new TileEntityAutoAnvil.RecipeSyncMessage(this.recipes.get(this.selection),tx,ty,tz));
             return;
         }
 		/*if(guiLeft + 97 <= x && guiLeft + 97 + 18 > x && guiTop + 77 < y && guiTop + 77 + 18 >= y) {
@@ -163,14 +183,14 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
 			search(this.search.getText());
 			return;
 		}*/
-        for(int i = index * 2; i < index * 2 + 10; i++) {
-            if(i >= this.recipes.size())
+        for (int i = index * 2; i < index * 2 + 10; i++) {
+            if (i >= this.recipes.size())
                 break;
             int ind = i - index * 2;
             int ix = 16 + 18 * (ind / 2);
             int iy = 41 + 18 * (ind % 2);
-            if(guiLeft + ix <= x && guiLeft + ix + 18 > x && guiTop + iy < y && guiTop + iy + 18 >= y) {
-                if(this.selection != i)
+            if (guiLeft + ix <= x && guiLeft + ix + 18 > x && guiTop + iy < y && guiTop + iy + 18 >= y) {
+                if (this.selection != i)
                     this.selection = i;
                 else
                     this.selection = -1;
@@ -179,56 +199,58 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
             }
         }
     }
+
     @Override
     protected void drawGuiContainerForegroundLayer(int mX, int mY) {
         String name = I18n.format("container.autoanvil", tier);
         this.fontRendererObj.drawString(name, 61 - this.fontRendererObj.getStringWidth(name) / 2, 8, 4210752);
         this.fontRendererObj.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 
-        if(this.selection >= 0) {
+        if (this.selection >= 0) {
 
             AnvilRecipes.AnvilConstructionRecipe recipe = recipes.get(this.selection);
             List<String> list = recipeToList(recipe);
             int longest = 0;
 
-            for(String s : list) {
+            for (String s : list) {
                 int length = this.fontRendererObj.getStringWidth(s);
 
-                if(length > longest)
+                if (length > longest)
                     longest = length;
             }
 
             double scale = 0.5D;
             GL11.glScaled(scale, scale, scale);
             int offset = 0;
-            for(String s : list) {
+            for (String s : list) {
                 this.fontRendererObj.drawString(s, 260, 50 + offset, 0xffffff);
                 offset += 9;
             }
 
-            this.lastSize = (int)(longest * scale);
-            GL11.glScaled(1D/scale, 1D/scale, 1D/scale);
+            this.lastSize = (int) (longest * scale);
+            GL11.glScaled(1D / scale, 1D / scale, 1D / scale);
 
         } else {
             this.lastSize = 0;
         }
     }
+
     public List<String> recipeToList(AnvilRecipes.AnvilConstructionRecipe recipe) {
 
         List<String> list = new ArrayList<>();
 
         list.add(EnumChatFormatting.YELLOW + "Inputs:");
 
-        for(RecipesCommon.AStack stack : recipe.input) {
-            if(stack instanceof RecipesCommon.ComparableStack)  {
+        for (RecipesCommon.AStack stack : recipe.input) {
+            if (stack instanceof RecipesCommon.ComparableStack) {
                 ItemStack input = ((RecipesCommon.ComparableStack) stack).toStack();
                 list.add(">" + input.stackSize + "x " + input.getDisplayName());
 
-            } else if(stack instanceof RecipesCommon.OreDictStack) {
+            } else if (stack instanceof RecipesCommon.OreDictStack) {
                 RecipesCommon.OreDictStack input = (RecipesCommon.OreDictStack) stack;
                 ArrayList<ItemStack> ores = OreDictionary.getOres(input.name);
 
-                if(ores.size() > 0) {
+                if (ores.size() > 0) {
                     ItemStack inStack = ores.get((int) (Math.abs(System.currentTimeMillis() / 1000) % ores.size()));
                     list.add(">" + input.stacksize + "x " + inStack.getDisplayName());
 
@@ -241,27 +263,28 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
         list.add("");
         list.add(EnumChatFormatting.YELLOW + "Outputs:");
 
-        for(AnvilRecipes.AnvilOutput stack : recipe.output) {
-            list.add(">" + stack.stack.stackSize + "x " + stack.stack.getDisplayName() + (stack.chance != 1F ? (" (" + (stack.chance * 100) + "%)" ) : ""));
+        for (AnvilRecipes.AnvilOutput stack : recipe.output) {
+            list.add(">" + stack.stack.stackSize + "x " + stack.stack.getDisplayName() + (stack.chance != 1F ? (" (" + (stack.chance * 100) + "%)") : ""));
         }
 
         return list;
     }
+
     public List<String> recipeToSearchList(AnvilRecipes.AnvilConstructionRecipe recipe) {
 
         List<String> list = new ArrayList<>();
 
-        for(RecipesCommon.AStack stack : recipe.input) {
-            if(stack instanceof RecipesCommon.ComparableStack)  {
+        for (RecipesCommon.AStack stack : recipe.input) {
+            if (stack instanceof RecipesCommon.ComparableStack) {
                 ItemStack input = ((RecipesCommon.ComparableStack) stack).toStack();
                 list.add(input.getDisplayName().toLowerCase(Locale.US));
 
-            } else if(stack instanceof RecipesCommon.OreDictStack) {
+            } else if (stack instanceof RecipesCommon.OreDictStack) {
                 RecipesCommon.OreDictStack input = (RecipesCommon.OreDictStack) stack;
                 ArrayList<ItemStack> ores = OreDictionary.getOres(input.name);
 
-                if(ores.size() > 0) {
-                    for(ItemStack ore : ores) {
+                if (ores.size() > 0) {
+                    for (ItemStack ore : ores) {
                         list.add(ore.getDisplayName().toLowerCase(Locale.US));
                     }
 
@@ -269,13 +292,15 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
             }
         }
 
-        for(AnvilRecipes.AnvilOutput stack : recipe.output) {
+        for (AnvilRecipes.AnvilOutput stack : recipe.output) {
             list.add(stack.stack.getDisplayName().toLowerCase(Locale.US));
         }
 
         return list;
     }
+
     int lastSize = 1;
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float inter, int mX, int mY) {
 
@@ -287,9 +312,9 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
         int slide = MathHelper.clamp_int(this.lastSize - 42, 0, 1000);
 
         int mul = 1;
-        while(true) {
+        while (true) {
 
-            if(slide >= 51 * mul) {
+            if (slide >= 51 * mul) {
                 this.drawTexturedModalRect(guiLeft + 125 + 51 * mul, guiTop + 47, 125, 17, 54, 108);
                 mul++;
 
@@ -300,25 +325,25 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
 
         this.drawTexturedModalRect(guiLeft + 125 + slide, guiTop + 17, 125, 17, 54, 108);
 
-        if(this.search.isFocused()) {
+        if (this.search.isFocused()) {
             drawTexturedModalRect(guiLeft + 8, guiTop + 78, 168, 222, 88, 16);
         }
 
-        if(guiLeft + 7 <= mX && guiLeft + 7 + 9 > mX && guiTop + 41 < mY && guiTop + 41 + 36 >= mY) {
+        if (guiLeft + 7 <= mX && guiLeft + 7 + 9 > mX && guiTop + 41 < mY && guiTop + 41 + 36 >= mY) {
             drawTexturedModalRect(guiLeft + 7, guiTop + 41, 176, 186, 9, 36);
         }
-        if(guiLeft + 106 <= mX && guiLeft + 106 + 9 > mX && guiTop + 41 < mY && guiTop + 41 + 36 >= mY) {
+        if (guiLeft + 106 <= mX && guiLeft + 106 + 9 > mX && guiTop + 41 < mY && guiTop + 41 + 36 >= mY) {
             drawTexturedModalRect(guiLeft + 106, guiTop + 41, 185, 186, 9, 36);
         }
-        if(guiLeft + 52 <= mX && guiLeft + 52 + 18 > mX && guiTop + 23 < mY && guiTop + 23 + 18 >= mY) {
+        if (guiLeft + 52 <= mX && guiLeft + 52 + 18 > mX && guiTop + 23 < mY && guiTop + 23 + 18 >= mY) {
             drawTexturedModalRect(guiLeft + 52, guiTop + 23, 176, 150, 18, 18);
         }
 		/*if(guiLeft + 97 <= mX && guiLeft + 97 + 18 > mX && guiTop + 77 < mY && guiTop + 77 + 18 >= mY) {
 			drawTexturedModalRect(guiLeft + 97, guiTop + 77, 176, 168, 18, 18);
 		}*/
 
-        for(int i = index * 2; i < index * 2 + 10; i++) {
-            if(i >= recipes.size())
+        for (int i = index * 2; i < index * 2 + 10; i++) {
+            if (i >= recipes.size())
                 break;
 
             int ind = i - index * 2;
@@ -344,21 +369,23 @@ public class GUIAutoAnvilSettingMode extends GuiContainer {
             this.zLevel = 300.0F;
             this.drawTexturedModalRect(guiLeft + 16 + 18 * (ind / 2), guiTop + 41 + 18 * (ind % 2), 18 + 18 * recipe.getOverlay().ordinal(), 222, 18, 18);
 
-            if(selection == i)
+            if (selection == i)
                 this.drawTexturedModalRect(guiLeft + 16 + 18 * (ind / 2), guiTop + 41 + 18 * (ind % 2), 0, 222, 18, 18);
         }
 
         this.search.drawTextBox();
     }
+
     @Override
     protected void keyTyped(char c, int key) {
 
-        if(this.search.textboxKeyTyped(c, key)) {
+        if (this.search.textboxKeyTyped(c, key)) {
             search(this.search.getText());
         } else {
             super.keyTyped(c, key);
         }
     }
+
     @Override
     public void onGuiClosed() {
         Keyboard.enableRepeatEvents(false);
