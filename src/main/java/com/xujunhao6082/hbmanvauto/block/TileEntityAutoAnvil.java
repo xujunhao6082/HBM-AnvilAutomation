@@ -56,18 +56,21 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
 
     public void networkUnpack(NBTTagCompound data) {
         this.power = data.getLong("power");
+        this.recipe = AnvilRecipes.getConstruction().get(data.getInteger("recipe"));
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         this.power = nbt.getLong("power");
+        this.recipe = AnvilRecipes.getConstruction().get(nbt.getInteger("recipe"));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setLong("power", this.power);
+        nbt.setLong("power", power);
+        nbt.setInteger("recipe", AnvilRecipes.getConstruction().indexOf(recipe));
     }
 
     public void setPower(long i) {
