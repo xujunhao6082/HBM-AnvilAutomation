@@ -26,9 +26,9 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0"
+version = "b1.0"
 group = "com.xujunhao6082.hbmanvauto" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "AutoAnvilForHBM-v"
+archivesBaseName = "AutoAnvilForHBM"
 
 compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
