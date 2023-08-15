@@ -51,7 +51,7 @@ public class AutoAnvil extends BlockContainer implements IGUIProvider, ITooltipP
 
     @Override
     public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player) {
-        super.onBlockHarvested(world,x,y,z,meta,player);
+        super.onBlockHarvested(world, x, y, z, meta, player);
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof TileEntityAutoAnvil) {
             for (ItemStack item : ((TileEntityAutoAnvil) te).slots) {
