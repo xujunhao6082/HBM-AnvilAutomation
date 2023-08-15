@@ -26,12 +26,16 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
     public long power;
     public static final long maxPower = 100000L;
     public AnvilConstructionRecipe recipe;
-    public boolean recipeChanged = false;
-    public Task task = null;
+    public boolean recipeChanged;
+    public Task task;
 
     public TileEntityAutoAnvil(int scount) {
         super(scount);
         setCustomName(I18n.format("container.autoanvil_storage"));
+        power = 0;
+        recipeChanged = false;
+        recipe = null;
+        task = null;
     }
 
     @Override
@@ -63,15 +67,35 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         this.power = nbt.getLong("power");
-        this.recipe = AnvilRecipes.getConstruction().get(nbt.getInteger("recipe"));
+        int rep = nbt.getInteger("recipe");
+        if(rep>=0){
+            this.recipe = AnvilRecipes.getConstruction().get(rep);
+        }else {
+            this.recipe = null;
+        }
+        int process = nbt.getInteger("process");
+        if (process < 0) {
+            task = null;
+        } else {
+            newTask(process);
+        }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setLong("power", power);
-        nbt.setInteger("recipe", AnvilRecipes.getConstruction().indexOf(recipe));
-        markDirty();
+        if(recipe != null){
+            nbt.setInteger("recipe", AnvilRecipes.getConstruction().indexOf(recipe));
+        }else {
+            nbt.setInteger("recipe", -1);
+        }
+        if (task != null) {
+            nbt.setInteger("process", task.getProcess());
+        } else {
+            nbt.setInteger("process", -1);
+        }
+
     }
 
     public void setPower(long i) {
@@ -91,7 +115,7 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
         if (!worldObj.isRemote) {
             if (task != null) {
                 task.update();
-                if(recipeChanged){
+                if (recipeChanged) {
                     task.cancel();
                 }
                 if (task.input == null) {
@@ -100,13 +124,13 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
             } else if (recipe != null) {
                 ItemStack[] inv = new ItemStack[27];
                 boolean make = true;
-                ItemStack placeholder=new ItemStack(Blocks.air,0);
+                ItemStack placeholder = new ItemStack(Blocks.air, 0);
                 for (int i = 0; i < 27; i++) {
                     inv[i] = this.getStackInSlot(i);
-                    if(inv[i]!=null){
-                        inv[i]=inv[i].copy();
-                    }else {
-                        inv[i]=placeholder;
+                    if (inv[i] != null) {
+                        inv[i] = inv[i].copy();
+                    } else {
+                        inv[i] = placeholder;
                     }
                 }
                 for (int i = 0; i < recipe.input.size(); i++) {
@@ -115,7 +139,6 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                 }
                 if (make) {
                     RecipesCommon.AStack stack;
-                    ItemStack[] out, in = new ItemStack[recipe.input.size()];
                     int consumedStacks, requiredStacks;
                     for (int i = 0; i < recipe.input.size(); i++) {
                         stack = recipe.input.get(i);
@@ -129,32 +152,73 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                                 int toConsume = Math.min(itemStack.stackSize, requiredStacks - consumedStacks);
                                 itemStack.stackSize -= toConsume;
                                 consumedStacks += toConsume;
-                                if (in[i] == null) {
-                                    in[i] = new ItemStack(itemStack.getItem(), 0);
-                                }
-                                in[i].stackSize += toConsume;
                             }
                         }
                     }
                     for (int i = 0; i < 27; i++) {
-                        if(inv[i]!=placeholder){
+                        if (inv[i] != placeholder) {
                             this.setInventorySlotContents(i, inv[i]);
                         }
                     }
-                    out = new ItemStack[recipe.output.size()];
-                    for (int i = 0; i < recipe.output.size(); i++) {
-                        out[i] = recipe.output.get(i).stack;
-                    }
-                    task = new Task(in, out);
+                    newTask();
                 }
             }
             if (recipeChanged) {
                 recipeChanged = false;
+                markDirty();
             }
         }
     }
 
+    private void newTask() {
+        newTask(0);
+    }
+
+    private void newTask(int process) {
+        ItemStack[] inv = new ItemStack[27];
+        ItemStack placeholder = new ItemStack(Blocks.air, 0);
+        for (int i = 0; i < 27; i++) {
+            inv[i] = this.getStackInSlot(i);
+            if (inv[i] != null) {
+                inv[i] = inv[i].copy();
+            } else {
+                inv[i] = placeholder;
+            }
+        }
+        RecipesCommon.AStack stack;
+        ItemStack[] out, in = new ItemStack[recipe.input.size()];
+        int consumedStacks, requiredStacks;
+        for (int i = 0; i < recipe.input.size(); i++) {
+            stack = recipe.input.get(i);
+            consumedStacks = 0;
+            requiredStacks = stack.stacksize;
+            for (ItemStack itemStack : inv) {
+                if (consumedStacks > requiredStacks) {
+                    break;
+                }
+                if (itemStack != null && stack.matchesRecipe(itemStack, true)) {
+                    int toConsume = Math.min(itemStack.stackSize, requiredStacks - consumedStacks);
+                    consumedStacks += toConsume;
+                    if (in[i] == null) {
+                        in[i] = new ItemStack(itemStack.getItem(), 0);
+                    }
+                    in[i].stackSize += toConsume;
+                }
+            }
+        }
+        out = new ItemStack[recipe.output.size()];
+        for (int i = 0; i < recipe.output.size(); i++) {
+            out[i] = recipe.output.get(i).stack;
+        }
+        task = new Task(in, out, process);
+        markDirty();
+    }
+
     public class Task {
+        public int getProcess() {
+            return process;
+        }
+
         private int process = 0;
         public ItemStack[] input;
         private final ItemStack[] output;
@@ -162,6 +226,12 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
         public Task(ItemStack[] input, ItemStack[] output) {
             this.input = input;
             this.output = output;
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 3);
+        }
+
+        public Task(ItemStack[] input, ItemStack[] output, int process) {
+            this(input, output);
+            this.process = process;
         }
 
         public void update() {
@@ -199,7 +269,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                         worldObj.spawnEntityInWorld(out);
                     }
                 }
+                worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3);
             }
+            markDirty();
         }
 
         public void cancel() {
@@ -209,6 +281,8 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                 worldObj.spawnEntityInWorld(out);
             }
             input = null;
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3);
+            markDirty();
         }
     }
 
@@ -272,5 +346,4 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
             }
         }
     }
-
 }
