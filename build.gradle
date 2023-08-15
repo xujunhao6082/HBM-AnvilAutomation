@@ -26,7 +26,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "b1.0"
+version = "v1.0"
 group = "com.xujunhao6082.hbmanvauto" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "AutoAnvilForHBM"
 
