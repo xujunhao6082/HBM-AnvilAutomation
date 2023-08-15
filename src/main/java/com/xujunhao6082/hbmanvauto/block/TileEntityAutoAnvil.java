@@ -29,6 +29,10 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
     public boolean recipeChanged;
     public Task task;
 
+    public TileEntityAutoAnvil() {
+        this(27);
+    }
+
     public TileEntityAutoAnvil(int scount) {
         super(scount);
         setCustomName(I18n.format("container.autoanvil_storage"));
@@ -68,9 +72,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
         super.readFromNBT(nbt);
         this.power = nbt.getLong("power");
         int rep = nbt.getInteger("recipe");
-        if(rep>=0){
+        if (rep >= 0) {
             this.recipe = AnvilRecipes.getConstruction().get(rep);
-        }else {
+        } else {
             this.recipe = null;
         }
         int process = nbt.getInteger("process");
@@ -85,9 +89,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setLong("power", power);
-        if(recipe != null){
+        if (recipe != null) {
             nbt.setInteger("recipe", AnvilRecipes.getConstruction().indexOf(recipe));
-        }else {
+        } else {
             nbt.setInteger("recipe", -1);
         }
         if (task != null) {
@@ -235,6 +239,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
         }
 
         public void update() {
+            if (power < PowerReduce) {
+                return;
+            }
             power -= PowerReduce;
             process++;
             if (process > 10) {

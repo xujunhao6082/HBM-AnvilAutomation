@@ -82,7 +82,7 @@ public class AutoAnvil extends BlockContainer implements IGUIProvider, ITooltipP
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityAutoAnvil(27);
+        return new TileEntityAutoAnvil();
     }
 
     @Override
