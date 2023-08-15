@@ -22,9 +22,9 @@ import net.minecraft.util.ChatComponentText;
 public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnergyUser {
     public static int from = 18;
     public static int size = 9;
-    public static int PowerReduce = 100;
+    public static long powerReduce = 100L;
     public long power;
-    public static final long maxPower = 100000L;
+    public static long maxPower = 100000L;
     public AnvilConstructionRecipe recipe;
     public boolean recipeChanged;
     public Task task;
@@ -239,10 +239,10 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
         }
 
         public void update() {
-            if (power < PowerReduce) {
+            if (power < powerReduce) {
                 return;
             }
-            power -= PowerReduce;
+            power -= powerReduce;
             process++;
             if (process > 10) {
                 input = null;

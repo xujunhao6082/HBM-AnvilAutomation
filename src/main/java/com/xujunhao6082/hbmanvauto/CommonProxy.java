@@ -17,6 +17,7 @@ public class CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         new BlockLoader(event);
         new ItemLoader(event);
+        ConfigLoader.load(event);
         NetworkLoader.registerMessage(TileEntityAutoAnvil.RecipeSyncMessage.Handle.class,
                 TileEntityAutoAnvil.RecipeSyncMessage.class, Side.SERVER);
     }
