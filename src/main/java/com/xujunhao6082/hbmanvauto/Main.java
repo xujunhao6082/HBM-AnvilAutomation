@@ -19,6 +19,7 @@ public class Main {
     public static CommonProxy proxy;
     public static final String MODID = "hbmanvauto";
     public static final String NAME = "AutoAnvil For HBM-NTM";
+    //version = "v" + rawVersion
     public static final String VERSION = "v1.0";
     @Mod.Instance(Main.MODID)
     public static Main instance;
