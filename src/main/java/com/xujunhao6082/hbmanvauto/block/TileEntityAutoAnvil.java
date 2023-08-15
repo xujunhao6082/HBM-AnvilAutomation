@@ -148,14 +148,17 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
                         stack = recipe.input.get(i);
                         consumedStacks = 0;
                         requiredStacks = stack.stacksize;
-                        for (ItemStack itemStack : inv) {
+                        for (int j = 0; j < inv.length; j++) {
                             if (consumedStacks > requiredStacks) {
                                 break;
                             }
-                            if (itemStack != null && stack.matchesRecipe(itemStack, true)) {
-                                int toConsume = Math.min(itemStack.stackSize, requiredStacks - consumedStacks);
-                                itemStack.stackSize -= toConsume;
+                            if (inv[j] != null && stack.matchesRecipe(inv[j], true)) {
+                                int toConsume = Math.min(inv[j].stackSize, requiredStacks - consumedStacks);
+                                inv[j].stackSize -= toConsume;
                                 consumedStacks += toConsume;
+                                if (inv[j].stackSize == 0) {
+                                    inv[j] = null;
+                                }
                             }
                         }
                     }
@@ -282,6 +285,9 @@ public class TileEntityAutoAnvil extends TileEntityMachineBase implements IEnerg
         }
 
         public void cancel() {
+            if(input==null){
+                return;
+            }
             for (ItemStack item : input) {
                 Entity out = new EntityItem(worldObj,
                         xCoord, yCoord + 1, zCoord, item);

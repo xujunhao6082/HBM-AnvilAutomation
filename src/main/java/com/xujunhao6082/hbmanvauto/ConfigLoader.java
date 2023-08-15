@@ -17,9 +17,9 @@ public class ConfigLoader {
         TileEntityAutoAnvil.size = config.get("AnvilOutputArea", "size", 9,
                 "Size of output area", 0, 27 - TileEntityAutoAnvil.from).getInt();
         TileEntityAutoAnvil.powerReduce = config.get("Machine", "autoAnvilNeedPowerLow", 100,
-                "Power that AutoAnvil need(Low)").getInt();
+                "Power that AutoAnvil need(per tick)(Low)").getInt();
         TileEntityAutoAnvil.powerReduce += (long) config.get("Machine", "autoAnvilNeedPowerHigh", 0,
-                "Power that AutoAnvil need(High)", 0, 0x7FFFFFFF).getInt() <<32;
+                "Power that AutoAnvil need(per tick)(High)", 0, 0x7FFFFFFF).getInt() <<32;
         TileEntityAutoAnvil.maxPower = config.get("Machine", "autoAnvilMaxPowerLow", 100000,
                 "Power that AutoAnvil can store(Low)").getInt();
         TileEntityAutoAnvil.maxPower += (long) config.get("Machine", "autoAnvilMaxPowerHigh", 0,
